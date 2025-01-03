@@ -1,0 +1,10 @@
+{
+  "API": {
+    "Events": {
+      "endpoint": "",
+      "region": "",
+      "defaultAuthMode": "apiKey",
+      "apiKey": ""
+    }
+  }
+}

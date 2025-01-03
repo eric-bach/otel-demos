@@ -1,0 +1,45 @@
+# IMPORTANT!
+# This file cannot be run with AWS SSO credentials
+# To use AWS SSO credentials run ./docker-compose.sh
+
+services:
+  logger-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: observer
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - adot-collector
+    networks:
+      - otel-net
+
+  adot-collector:
+    image: public.ecr.aws/aws-observability/aws-otel-collector:latest
+    container_name: adot-collector
+    command: ['--config=/etc/otel-config.yaml']
+    volumes:
+      - ./otel-config.yaml:/etc/otel-config.yaml
+      # TEMP - this is not reading the SSO credentials correctly so we need to use ./docker-compose.sh
+      # - ~/.aws:/root/.aws:ro
+      # - ~/.aws/sso/cache:/root/.aws/sso/cache:ro
+    environment:
+      - AWS_REGION=${AWS_REGION:-us-west-2}
+      # TEMP - this is not reading the SSO credentials correctly so we need to use ./docker-compose.sh
+      #- AWS_PROFILE=${AWS_PROFILE}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+    ports:
+      - '4317:4317'
+      - '4318:4318'
+      - '8888:8888'
+      - '13133:13133'
+    networks:
+      - otel-net
+
+networks:
+  otel-net:
+    driver: bridge
