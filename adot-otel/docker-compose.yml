@@ -3,26 +3,9 @@
 # To use AWS SSO credentials run ./docker-compose.sh
 
 services:
-  # logger-app:
-  #   build:
-  ##     context: .
-  #     context: ./src/logger-app
-  #     dockerfile: Dockerfile
-  #   container_name: observer
-  #   restart: unless-stopped
-  #   environment:
-  #     - NODE_ENV=production
-  #   depends_on:
-  #     - adot-collector
-  #   networks:
-  #     - otel-net
-
   sample-app:
-    build:
-      .
-      # context: .
-      # dockerfile: Dockerfile
-    container_name: js-sample-app
+    build: .
+    container_name: sample-app
     environment:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://adot-collector:4317
     volumes:

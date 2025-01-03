@@ -14,21 +14,19 @@
  *
  */
 
-'use strict'
+'use strict';
 
-// reads in config file
-const yaml = require('js-yaml');
-const fs = require('fs');
+import * as yaml from 'js-yaml';
+import * as fs from 'fs';
 
 // Get cfg or throw error
-function create_config(file) {
-    try {
-        const config = yaml.load(fs.readFileSync(file, 'utf8'));
-        return config;
-    }
-    catch (e) {
+function create_config(file: string): any {
+  try {
+    const config = yaml.load(fs.readFileSync(file, 'utf8'));
+    return config;
+  } catch (e) {
     console.log(e);
-    }
+  }
 }
 
-module.exports = {create_config};
+export { create_config };

@@ -1,4 +1,8 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+### appsync-events
+
+This is a demonstration of AWS AppSync Events with a NextJS 15 client/server application.
+
+The /publisher page publishes events that the /client page subscribes to and outputs on the page in real time
 
 ## Getting Started
 

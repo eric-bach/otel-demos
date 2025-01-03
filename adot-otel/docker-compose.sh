@@ -5,4 +5,4 @@
 eval $(aws configure export-credentials --profile observability2 --format env)
 
 # Start docker-compose with the temporary credentials
-docker-compose -f src/sample-app/docker-compose.yml up
+docker-compose -f docker-compose.yml up

@@ -16,23 +16,23 @@
 
 'use strict';
 
-const sdk = require('./nodeSDK');
+import { nodeSDKBuilder } from './nodeSDK';
+import { create_config } from './config';
+import { startServer } from './server';
+import { updateTimeAlive, updateThreadsActive, updateCpuUsageMetric, updateSizeMetric } from './random-metrics';
 
 // config
-const create_cfg = require('./config');
-const cfg = create_cfg.create_config('./config.yaml');
+const cfg = create_config('./config.yaml');
 
 // validate SampleAppPorts provided in config
 validateSampleAppPorts();
 
 // wait for initialization of nodesdk (metric and trace provider) and then start random and request based metric generation
-sdk.nodeSDKBuilder().then(() => {
+nodeSDKBuilder().then(() => {
   // request metrics generation
-  const server = require('./server');
-  server.startServer();
+  startServer();
 
   // random metrics generation
-  const { updateTimeAlive, updateThreadsActive, updateCpuUsageMetric, updateSizeMetric } = require('./random-metrics');
   setInterval(() => {
     updateTimeAlive();
     updateThreadsActive();
@@ -41,11 +41,11 @@ sdk.nodeSDKBuilder().then(() => {
   }, cfg.TimeInterval * 1000);
 });
 
-function validateSampleAppPorts() {
+function validateSampleAppPorts(): void {
   // validate SampleAppPorts provided in config
   if (cfg.SampleAppPorts.length > 0) {
     for (let i = 0; i < cfg.SampleAppPorts.length; i++) {
-      let port = cfg.SampleAppPorts[i];
+      const port = cfg.SampleAppPorts[i];
       if (isNaN(port) || port < 0 || port > 65535) {
         throw new Error(`SampleAppPorts is not a valid configuration!`);
       }

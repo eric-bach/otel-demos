@@ -1,14 +1,14 @@
 {
-  "name": "javascript-sample-app",
+  "name": "opentelemetry-demo",
   "version": "1.0.0",
-  "description": "sample-app for javascript SDK",
-  "main": "index.js",
+  "description": "opentelemetry demo with aws sdk",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "eric-bach",
   "license": "ISC",
   "dependencies": {
     "@aws/otel-aws-xray-propagator": "^0.13.0",
@@ -26,7 +26,7 @@
     "@opentelemetry/propagator-aws-xray": "^1.26.0",
     "@opentelemetry/resources": "^1.28.0",
     "@opentelemetry/sdk-metrics": "^1.28.0",
-    "@opentelemetry/sdk-node": "^0.55.0",
+    "@opentelemetry/sdk-node": "^0.57.0",
     "@opentelemetry/sdk-trace-base": "^1.28.0",
     "@opentelemetry/sdk-trace-node": "^1.28.0",
     "@opentelemetry/semantic-conventions": "^1.27.0",
@@ -37,5 +37,11 @@
     "node-fetch": "~2.7.0",
     "nodemon": "^3.1.9",
     "process": "^0.11.10"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.0"
   }
 }

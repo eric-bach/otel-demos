@@ -16,19 +16,18 @@
 
 'use strict';
 
-const process = require('process');
-const opentelemetry = require('@opentelemetry/sdk-node');
-
-const { Resource } = require('@opentelemetry/resources');
-const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
-const { PeriodicExportingMetricReader } = require('@opentelemetry/sdk-metrics');
-const { OTLPMetricExporter } = require('@opentelemetry/exporter-metrics-otlp-grpc');
-const { BatchSpanProcessor } = require('@opentelemetry/sdk-trace-base');
-const { AWSXRayPropagator } = require('@opentelemetry/propagator-aws-xray');
-const { AWSXRayIdGenerator } = require('@opentelemetry/id-generator-aws-xray');
-const { HttpInstrumentation } = require('@opentelemetry/instrumentation-http');
-const { AwsInstrumentation } = require('@opentelemetry/instrumentation-aws-sdk');
-const { OTLPTraceExporter } = require('@opentelemetry/exporter-otlp-grpc'); // Update this line
+import process from 'process';
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { Resource } from '@opentelemetry/resources';
+import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import { MetricReader, PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
+import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc';
+import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
+import { AWSXRayPropagator } from '@opentelemetry/propagator-aws-xray';
+import { AWSXRayIdGenerator } from '@opentelemetry/id-generator-aws-xray';
+import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
+import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
 
 const _resource = Resource.default().merge(
   new Resource({
@@ -37,8 +36,7 @@ const _resource = Resource.default().merge(
 );
 
 const _traceExporter = new OTLPTraceExporter({
-  // Update this line
-  url: 'http://adot-collector:4317', // Update this line to point to your OTLP endpoint
+  url: 'http://adot-collector:4317',
 });
 const _spanProcessor = new BatchSpanProcessor(_traceExporter);
 
@@ -50,8 +48,9 @@ const _metricReader = new PeriodicExportingMetricReader({
   exportIntervalMillis: 1000,
 });
 
-async function nodeSDKBuilder() {
-  const sdk = new opentelemetry.NodeSDK({
+async function nodeSDKBuilder(): Promise<void> {
+  // https://open-telemetry.github.io/opentelemetry-js/classes/_opentelemetry_sdk_node.NodeSDK.html
+  const sdk = new NodeSDK({
     textMapPropagator: new AWSXRayPropagator(),
     metricReader: _metricReader,
     instrumentations: [
@@ -63,7 +62,7 @@ async function nodeSDKBuilder() {
     resource: _resource,
     spanProcessor: _spanProcessor,
     traceExporter: _traceExporter,
-    tracerConfig: _tracerConfig, // Pass tracerConfig here
+    //tracerConfig: _tracerConfig,
   });
 
   // this enables the API to record telemetry
@@ -78,4 +77,5 @@ async function nodeSDKBuilder() {
       .finally(() => process.exit(0));
   });
 }
-module.exports = { nodeSDKBuilder };
+
+export { nodeSDKBuilder };
